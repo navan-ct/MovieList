@@ -54,7 +54,7 @@ export type MovieDetail = {
 export async function getMovieById(id: string) {
   try {
     const response = await http.get<GetMovieByIdResponse>('/', {
-      params: { i: id }
+      params: { i: id, plot: 'full' }
     });
 
     if (response.data.Response === 'False') {

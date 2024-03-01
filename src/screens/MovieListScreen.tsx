@@ -6,6 +6,7 @@ import {
   StyleSheet,
   type TextInput as ReactTextInput
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInput, Button, Card, ActivityIndicator } from 'react-native-paper';
 import { moderateScale } from 'react-native-size-matters';
 import { type StackScreenProps } from '@react-navigation/stack';
@@ -13,6 +14,7 @@ import { type StackScreenProps } from '@react-navigation/stack';
 import { useSelector, useDispatch } from '@/hooks';
 import { searchMovies, selectMovies, selectIsLoading } from '@/store/movieSlice';
 import { type RootStackParamList } from '@/types';
+import { type MovieListItem } from '@/api/movies';
 
 export type MovieListScreenProps = StackScreenProps<RootStackParamList, 'MovieList'>;
 
@@ -21,7 +23,7 @@ export function MovieListScreen({ navigation }: MovieListScreenProps) {
   const movies = useSelector(selectMovies);
   const isLoading = useSelector(selectIsLoading);
 
-  const [search, setSearch] = useState('Avengers');
+  const [search, setSearch] = useState('');
   const searchRef = useRef<ReactTextInput>(null);
 
   function handleOutsidePress() {
@@ -33,9 +35,16 @@ export function MovieListScreen({ navigation }: MovieListScreenProps) {
     if (search.length) dispatch(searchMovies(search));
   }
 
+  function handleMovieSelect(movie: MovieListItem) {
+    navigation.navigate('MovieDetail', {
+      movieId: movie.id,
+      movieTitle: movie.title
+    });
+  }
+
   return (
     <TouchableWithoutFeedback onPress={handleOutsidePress} style={styles.touchable}>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <TextInput
           label="Title"
           value={search}
@@ -60,18 +69,13 @@ export function MovieListScreen({ navigation }: MovieListScreenProps) {
               data={movies}
               numColumns={2}
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.movieListContentContainer}
+              contentContainerStyle={styles.movieContentContainer}
               columnWrapperStyle={styles.movieColumnContainer}
               ListFooterComponent={<View style={styles.movieListFooter} />}
               renderItem={({ item }) => (
                 <Card
                   key={item.id}
-                  onPress={() => {
-                    navigation.navigate('MovieDetail', {
-                      movieId: item.id,
-                      movieTitle: item.title
-                    });
-                  }}
+                  onPress={() => handleMovieSelect(item)}
                   style={styles.movieItem}
                 >
                   <Card.Cover source={{ uri: item.poster }} style={styles.moviePoster} />
@@ -83,7 +87,7 @@ export function MovieListScreen({ navigation }: MovieListScreenProps) {
         ) : null}
 
         {!movies.length && isLoading ? <ActivityIndicator /> : null}
-      </View>
+      </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 }
@@ -105,10 +109,10 @@ const styles = StyleSheet.create({
   },
   movieListContainer: {
     flex: 1,
-    borderRadius: moderateScale(4),
-    overflow: 'hidden'
+    overflow: 'hidden',
+    borderRadius: moderateScale(4)
   },
-  movieListContentContainer: {
+  movieContentContainer: {
     gap: moderateScale(8)
   },
   movieColumnContainer: {
@@ -116,8 +120,8 @@ const styles = StyleSheet.create({
   },
   movieItem: {
     flex: 1,
-    borderRadius: moderateScale(4),
-    overflow: 'hidden'
+    overflow: 'hidden',
+    borderRadius: moderateScale(4)
   },
   moviePoster: {
     borderRadius: 0
