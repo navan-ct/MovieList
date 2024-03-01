@@ -17,10 +17,7 @@ export function MovieDetailScreen({ route }: MovieDetailScreenProps) {
     dispatch(getMovieById(route.params.movieId));
   }, [dispatch, route.params.movieId]);
 
-  if (!movie) {
-    return null;
-  }
-
+  if (!movie) return null;
   return (
     <View style={styles.container}>
       <Text>{movie.title}</Text>

@@ -1,7 +1,5 @@
 import { http } from './http';
-import { GetMovieByIdResponse, type SearchMoviesResponse } from './types';
-
-const PAGINATION_LIMIT = 10;
+import { type GetMovieByIdResponse, type SearchMoviesResponse } from './types';
 
 export type MovieListItem = {
   id: string;
@@ -10,10 +8,10 @@ export type MovieListItem = {
   year: string;
 };
 
-export async function searchMovies(title: string, page: number = 1) {
+export async function searchMovies(title: string) {
   try {
     const response = await http.get<SearchMoviesResponse>('/', {
-      params: { s: title, page }
+      params: { s: title }
     });
 
     if (response.data.Response === 'False') {
@@ -26,12 +24,8 @@ export async function searchMovies(title: string, page: number = 1) {
       title: result.Title,
       year: result.Year
     }));
-    const pageCount = Math.ceil(Number(response.data.totalResults) / PAGINATION_LIMIT);
 
-    return {
-      data: movies,
-      pagination: { total: pageCount, page }
-    };
+    return { data: movies };
   } catch (error) {
     console.error(error);
     return null;

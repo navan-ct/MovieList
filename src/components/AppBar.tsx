@@ -9,7 +9,7 @@ export function AppBar({ navigation, route, options, back }: AppBarProps) {
   const title = getHeaderTitle(options, route.name);
 
   return (
-    <Appbar.Header>
+    <Appbar.Header mode="center-aligned">
       {back ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
       <Appbar.Content title={title} />
     </Appbar.Header>
