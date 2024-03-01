@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { ScrollView, View, StyleSheet } from 'react-native';
-import { ActivityIndicator, Card, Text, Chip, DataTable } from 'react-native-paper';
+import { ScrollView, StyleSheet } from 'react-native';
+import { ActivityIndicator, Card, Text, DataTable } from 'react-native-paper';
 import { moderateScale } from 'react-native-size-matters';
 import { type StackScreenProps } from '@react-navigation/stack';
 
 import { useSelector, useDispatch } from '@/hooks';
 import { getMovieById, selectMovie, selectIsLoading } from '@/store/movieSlice';
+import { MovieMembers } from '@/components';
 import { type RootStackParamList } from '@/types';
 
 export type MovieDetailScreenProps = StackScreenProps<RootStackParamList, 'MovieDetail'>;
@@ -49,26 +50,6 @@ export function MovieDetailScreen({ route }: MovieDetailScreenProps) {
   );
 }
 
-type MovieMembersProps = {
-  role: string;
-  members: string[];
-};
-
-function MovieMembers({ role, members }: MovieMembersProps) {
-  return (
-    <View style={styles.membersContainer}>
-      <Text variant="labelSmall" style={styles.membersRole}>
-        {role}
-      </Text>
-      <View style={styles.memberList}>
-        {members.map((name) => (
-          <Chip key={name}>{name}</Chip>
-        ))}
-      </View>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: moderateScale(16),
@@ -86,19 +67,6 @@ const styles = StyleSheet.create({
   movieRatingsTable: {
     marginTop: moderateScale(2),
     marginBottom: moderateScale(20)
-  },
-  membersContainer: {
-    marginBottom: moderateScale(18)
-  },
-  membersRole: {
-    textTransform: 'uppercase',
-    marginBottom: moderateScale(4)
-  },
-  memberList: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: moderateScale(4)
   },
   moviePlotTitle: {
     textTransform: 'uppercase',
