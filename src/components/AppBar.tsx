@@ -5,7 +5,7 @@ import { type StackHeaderProps } from '@react-navigation/stack';
 
 export type AppBarProps = StackHeaderProps;
 
-export default function AppBar({ navigation, route, options, back }: AppBarProps) {
+export function AppBar({ navigation, route, options, back }: AppBarProps) {
   const title = getHeaderTitle(options, route.name);
 
   return (

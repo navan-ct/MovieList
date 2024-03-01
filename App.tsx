@@ -1,5 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
+import { Provider } from 'react-redux';
 import {
   PaperProvider,
   MD3DarkTheme,
@@ -9,8 +10,10 @@ import {
 import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { store } from '@/store';
 import { MovieListScreen, MovieDetailScreen } from '@/screens';
-import AppBar from '@/components/AppBar';
+import { AppBar } from '@/components';
+import { type RootStackParamList } from '@/types';
 
 const paperTheme = {
   ...MD3DarkTheme,
@@ -24,21 +27,27 @@ const { DarkTheme: navigationTheme } = adaptNavigationTheme({
   reactNavigationDark: DarkTheme
 });
 
-const Stack = createStackNavigator();
+const RootStack = createStackNavigator<RootStackParamList>();
 
-export default function App() {
+export function App() {
   return (
-    <PaperProvider theme={paperTheme}>
-      <NavigationContainer theme={navigationTheme}>
-        <Stack.Navigator initialRouteName="MovieList" screenOptions={{ header: AppBar }}>
-          <Stack.Screen
-            name="MovieList"
-            component={MovieListScreen}
-            options={{ title: 'Movies' }}
-          />
-          <Stack.Screen name="MovieDetail" component={MovieDetailScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </PaperProvider>
+    <Provider store={store}>
+      <PaperProvider theme={paperTheme}>
+        <NavigationContainer theme={navigationTheme}>
+          <RootStack.Navigator initialRouteName="MovieList" screenOptions={{ header: AppBar }}>
+            <RootStack.Screen
+              name="MovieList"
+              component={MovieListScreen}
+              options={{ title: 'Movies' }}
+            />
+            <RootStack.Screen
+              name="MovieDetail"
+              component={MovieDetailScreen}
+              options={({ route }) => ({ title: route.params.movieTitle })}
+            />
+          </RootStack.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
+    </Provider>
   );
 }
